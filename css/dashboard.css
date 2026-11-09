@@ -1,0 +1,755 @@
+/* UTP Cloud — Estilos del Dashboard */
+/* Tipografía: Cabinet Grotesk / Syne + Sora + Martian Mono */
+    body {
+      font-family: 'Sora', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-weight: 400;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    h1, h2, h3, h4, h5, h6, .font-display {
+      font-family: 'Cabinet Grotesk', 'Syne', 'Sora', sans-serif;
+    }
+    .font-mono { font-family: 'Martian Mono', monospace; }
+
+    /* 400 → Textos */
+    p, span, label, input, textarea {
+      font-weight: 400;
+    }
+
+    /* 500 → Métricas */
+    #sidebarCpuText, #sidebarRamText, #sidebarDiskText,
+    #statHTML, #statCSS, #statPHP,
+    #userStorageUsed, #htopCpu, #htopRam, #htopSwap,
+    #htopTasks, #htopModalLoad, #trashCountBadge,
+    .metric-value, .stat-value {
+      font-weight: 500 !important;
+    }
+
+    /* 600 → Botones / Títulos pequeños */
+    button, .pill-btn, .filter-btn, .dropzone-btn,
+    h3, h4, .form-label, .metric-label, .btn-primary,
+    .badge-tag, .version-pill {
+      font-weight: 600 !important;
+    }
+
+    /* 700 → Títulos principales */
+    h1, h2, .form-title {
+      font-weight: 700 !important;
+    }
+
+    .pill-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+    .dropzone-active { border-color: #3b82f6 !important; background-color: #eff6ff !important; }
+
+    /* =========================================================
+       TEMA CLARO (SOFT-UI) - ESTILO NATIVO POR DEFECTO
+       ========================================================= */
+    .card-soft {
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      border-radius: 24px;
+      box-shadow: 0 4px 20px -2px rgba(59, 130, 246, 0.05);
+      transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* ENCABEZADOS Y TEXTOS EN TEMA CLARO: ALTO CONTRASTE */
+    h1, h2, h3:not(#modalHtopMonitor *), h4:not(#modalHtopMonitor *) {
+      color: #0f172a !important;
+    }
+    #statHTML, #statCSS, #statPHP {
+      color: #0f172a !important;
+    }
+    .text-title-dark {
+      color: #0f172a !important;
+    }
+    p.text-slate-500, span.text-slate-500,
+    p.text-slate-400, span.text-slate-400 {
+      color: #64748b !important;
+    }
+
+    /* MODALES EN TEMA CLARO: 100% BLANCO SOFT-UI */
+    .modal-panel {
+      background-color: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      color: #0f172a !important;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.18) !important;
+    }
+    .modal-panel h3, .modal-panel h4 {
+      color: #0f172a !important;
+    }
+    .modal-panel p, .modal-panel label {
+      color: #475569 !important;
+    }
+    .modal-input {
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    .modal-input:focus {
+      background-color: #ffffff !important;
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+    }
+    .btn-modal-close {
+      background-color: #f1f5f9 !important;
+      border: 1px solid #e2e8f0 !important;
+      color: #64748b !important;
+    }
+    .btn-modal-close:hover {
+      background-color: #fee2e2 !important;
+      color: #ef4444 !important;
+      border-color: #fecaca !important;
+    }
+    .btn-modal-cancel {
+      background-color: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
+      color: #334155 !important;
+    }
+    .btn-modal-cancel:hover {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+    }
+    .modal-choice-card {
+      background-color: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+    }
+    .modal-choice-card h4 {
+      color: #0f172a !important;
+    }
+    .modal-icon-badge {
+      background-color: #eff6ff !important;
+      border: 1px solid #bfdbfe !important;
+      color: #2563eb !important;
+    }
+
+    /* EDITOR DE CÓDIGO EN TEMA CLARO */
+    .editor-modal-container {
+      background-color: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
+    }
+    .editor-header {
+      background-color: #f8fafc !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+    .editor-filename-input {
+      background-color: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    .editor-close-btn {
+      color: #475569 !important;
+    }
+    .editor-close-btn:hover {
+      background-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+    .editor-body-wrapper {
+      background-color: #f8fafc !important;
+    }
+    .editor-line-numbers {
+      color: #94a3b8 !important;
+      border-right: 1px solid #e2e8f0 !important;
+    }
+    .editor-code-area {
+      color: #0f172a !important;
+      caret-color: #2563eb !important;
+    }
+    .editor-footer {
+      background-color: #f8fafc !important;
+      border-top: 1px solid #e2e8f0 !important;
+      color: #475569 !important;
+    }
+
+    /* BOTONES DE FILTRO EN TEMA CLARO */
+    .filter-btn {
+      color: #475569 !important;
+    }
+    .filter-btn:hover {
+      color: #0f172a !important;
+      background-color: #ffffff !important;
+    }
+    .filter-trash-btn {
+      color: #e11d48 !important;
+    }
+    .filter-trash-btn:hover {
+      background-color: #ffe4e6 !important;
+    }
+    .trash-badge {
+      background-color: #ffe4e6 !important;
+      color: #be123c !important;
+      border: 1px solid #fecdd3 !important;
+    }
+
+    /* =========================================================
+       TEMA OSCURO (OBSIDIAN BLACK) - ACTIVADO CON html.dark
+       ========================================================= */
+    html.dark body {
+      background-color: #06090f !important;
+      color: #e2e8f0 !important;
+    }
+
+    /* Contenedor Principal SaaS */
+    html.dark .saas-container {
+      background-color: #0a0e17 !important;
+      border-color: rgba(30, 41, 59, 0.9) !important;
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    /* Tarjetas Soft en Modo Oscuro */
+    html.dark .card-soft {
+      background: #0d131f !important;
+      border: 1px solid rgba(30, 41, 59, 0.9) !important;
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5), 0 4px 12px -2px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Encabezados y Títulos principales en Modo Oscuro */
+    html.dark h1,
+    html.dark h2,
+    html.dark h3:not(#modalEditor *):not(#modalHtopMonitor *),
+    html.dark h4:not(#modalEditor *):not(#modalHtopMonitor *),
+    html.dark .text-title-dark {
+      color: #ffffff !important;
+    }
+
+    /* Números y estadísticas de métricas */
+    html.dark #statHTML,
+    html.dark #statCSS,
+    html.dark #statPHP {
+      color: #ffffff !important;
+    }
+
+    /* Textos secundarios y leyendas en Modo Oscuro */
+    html.dark p.text-slate-500,
+    html.dark span.text-slate-500,
+    html.dark p.text-slate-400,
+    html.dark span.text-slate-400 {
+      color: #94a3b8 !important;
+    }
+    html.dark span.text-slate-600,
+    html.dark p.text-slate-700 {
+      color: #cbd5e1 !important;
+    }
+    html.dark strong.text-slate-800 {
+      color: #f1f5f9 !important;
+    }
+
+    /* Cabecera y separadores */
+    html.dark header {
+      border-color: rgba(30, 41, 59, 0.8) !important;
+    }
+
+    /* Logo Box */
+    html.dark .logo-box {
+      background-color: #0f172a !important;
+      border-color: #1e293b !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Botón Mi Espacio en modo oscuro */
+    html.dark .nav-btn-space {
+      background-color: rgba(59, 130, 246, 0.15) !important;
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      color: #60a5fa !important;
+    }
+
+    /* Botón Editor de Código en cabecera */
+    html.dark .nav-btn-editor {
+      background-color: rgba(30, 41, 59, 0.8) !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    html.dark .nav-btn-editor:hover {
+      background-color: #334155 !important;
+    }
+
+    /* Selector de Tema en cabecera */
+    html.dark .pill-toggle {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    html.dark .pill-toggle:hover {
+      background-color: #334155 !important;
+    }
+
+    /* Indicador Servidor Activo */
+    html.dark .server-pill {
+      background-color: rgba(6, 78, 59, 0.4) !important;
+      border-color: rgba(16, 185, 129, 0.3) !important;
+      color: #34d399 !important;
+    }
+
+    /* Tarjeta de Usuario en Cabecera */
+    html.dark .user-pill {
+      background-color: #0f172a !important;
+      border-color: #1e293b !important;
+    }
+    html.dark .user-pill #headerUserName {
+      color: #f8fafc !important;
+    }
+    html.dark .user-pill #headerUserRole {
+      color: #94a3b8 !important;
+    }
+
+    /* Botón Salir (Logout) */
+    html.dark a[href="logout.php"] {
+      color: #94a3b8 !important;
+    }
+    html.dark a[href="logout.php"]:hover {
+      color: #fb7185 !important;
+      background-color: rgba(136, 19, 55, 0.3) !important;
+    }
+
+    /* Botón Visitar Mi Web */
+    html.dark #btnVisitSite {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+    html.dark #btnVisitSite:hover {
+      background-color: #334155 !important;
+    }
+
+    /* Barra de Espacios de Trabajo / Proyectos */
+    .projects-bar {
+      background-color: #ffffff !important;
+      border: 1px solid rgba(226, 232, 240, 0.9) !important;
+      box-shadow: 0 4px 20px -2px rgba(59, 130, 246, 0.05) !important;
+    }
+    .btn-new-project {
+      background-color: #eff6ff !important;
+      border: 1px solid #bfdbfe !important;
+      color: #2563eb !important;
+    }
+    .btn-new-project:hover {
+      background-color: #dbeafe !important;
+      color: #1d4ed8 !important;
+    }
+    html.dark .projects-bar {
+      background-color: rgba(13, 19, 31, 0.9) !important;
+      border-color: #1e293b !important;
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5) !important;
+    }
+    html.dark .btn-new-project {
+      background-color: rgba(30, 58, 138, 0.4) !important;
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      color: #60a5fa !important;
+    }
+    html.dark .btn-new-project:hover {
+      background-color: rgba(30, 58, 138, 0.6) !important;
+    }
+
+    /* Métricas del Servidor */
+    html.dark .metric-server-icon {
+      background-color: rgba(30, 58, 138, 0.4) !important;
+      border-color: rgba(59, 130, 246, 0.3) !important;
+      color: #60a5fa !important;
+    }
+    html.dark .metric-server-status {
+      background-color: rgba(6, 78, 59, 0.4) !important;
+      border-color: rgba(16, 185, 129, 0.3) !important;
+      color: #34d399 !important;
+    }
+    html.dark .metric-label {
+      color: #cbd5e1 !important;
+    }
+    html.dark .progress-track {
+      background-color: #1e293b !important;
+    }
+    html.dark .metric-divider {
+      border-color: #1e293b !important;
+    }
+    html.dark .version-pill {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #cbd5e1 !important;
+    }
+
+    /* Enlace del Sitio Web */
+    html.dark #deployedUrlBox {
+      background-color: #020617 !important;
+      border-color: #1e293b !important;
+      color: #60a5fa !important;
+    }
+    html.dark .btn-copy-url {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    html.dark .btn-copy-url:hover {
+      background-color: #334155 !important;
+    }
+
+    /* Dropzone en Modo Oscuro */
+    html.dark #dropzone {
+      background-color: rgba(15, 23, 42, 0.4) !important;
+      border-color: #334155 !important;
+    }
+    html.dark #dropzone:hover {
+      background-color: rgba(30, 41, 59, 0.5) !important;
+      border-color: #3b82f6 !important;
+    }
+    html.dark .dropzone-icon-box {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #60a5fa !important;
+    }
+    html.dark .dropzone-title {
+      color: #e2e8f0 !important;
+    }
+    html.dark .dropzone-btn {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    html.dark .dropzone-btn:hover {
+      background-color: #334155 !important;
+    }
+    html.dark #uploadProgressBox {
+      border-color: #1e293b !important;
+    }
+
+    /* 3 Tarjetas de Lenguajes (HTML, CSS, PHP) en Modo Oscuro */
+    html.dark .metric-icon-html {
+      background-color: rgba(120, 53, 15, 0.3) !important;
+      border-color: rgba(245, 158, 11, 0.3) !important;
+      color: #fbbf24 !important;
+    }
+    html.dark .metric-btn-html {
+      background-color: rgba(120, 53, 15, 0.3) !important;
+      border-color: rgba(245, 158, 11, 0.3) !important;
+      color: #fcd34d !important;
+    }
+    html.dark .metric-btn-html:hover {
+      background-color: rgba(120, 53, 15, 0.5) !important;
+    }
+    html.dark .metric-icon-css {
+      background-color: rgba(30, 58, 138, 0.3) !important;
+      border-color: rgba(59, 130, 246, 0.3) !important;
+      color: #60a5fa !important;
+    }
+    html.dark .metric-btn-css {
+      background-color: rgba(30, 58, 138, 0.3) !important;
+      border-color: rgba(59, 130, 246, 0.3) !important;
+      color: #93c5fd !important;
+    }
+    html.dark .metric-btn-css:hover {
+      background-color: rgba(30, 58, 138, 0.5) !important;
+    }
+    html.dark .metric-icon-php {
+      background-color: rgba(88, 28, 135, 0.3) !important;
+      border-color: rgba(168, 85, 247, 0.3) !important;
+      color: #c084fc !important;
+    }
+    html.dark .metric-btn-php {
+      background-color: rgba(88, 28, 135, 0.3) !important;
+      border-color: rgba(168, 85, 247, 0.3) !important;
+      color: #d8b4fe !important;
+    }
+    html.dark .metric-btn-php:hover {
+      background-color: rgba(88, 28, 135, 0.5) !important;
+    }
+
+    /* Explorador de Archivos en Modo Oscuro */
+    html.dark #currentProjectBadge {
+      background-color: rgba(30, 58, 138, 0.4) !important;
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      color: #93c5fd !important;
+    }
+    html.dark .filter-bar-wrap {
+      background-color: rgba(2, 6, 23, 0.7) !important;
+      border: 1px solid #1e293b !important;
+    }
+    html.dark .filter-btn-active {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+    }
+    html.dark .filter-btn {
+      color: #94a3b8 !important;
+    }
+    html.dark .filter-btn:hover {
+      color: #ffffff !important;
+      background-color: rgba(30, 41, 59, 0.6) !important;
+    }
+    html.dark .filter-trash-btn {
+      color: #fb7185 !important;
+    }
+    html.dark .filter-trash-btn:hover {
+      background-color: rgba(136, 19, 55, 0.4) !important;
+    }
+        /* Cabecera de Papelera en Modo Oscuro */
+    html.dark #trashNoticeHeader {
+      background-color: rgba(76, 5, 25, 0.45) !important;
+      border-color: rgba(159, 18, 57, 0.7) !important;
+    }
+    html.dark #trashNoticeHeader h4 {
+      color: #fecdd3 !important;
+    }
+    html.dark #trashNoticeHeader p {
+      color: #fda4af !important;
+    }
+
+    /* Modal 2FA en Modo Oscuro */
+    html.dark #modalUser2FA .bg-emerald-50 {
+      background-color: rgba(6, 78, 59, 0.45) !important;
+      border-color: rgba(6, 95, 70, 0.75) !important;
+    }
+    html.dark #modalUser2FA h4 {
+      color: #a7f3d0 !important;
+    }
+    html.dark #modalUser2FA .bg-emerald-50 p {
+      color: #6ee7b7 !important;
+    }
+
+    html.dark .trash-badge {
+      background-color: rgba(136, 19, 55, 0.6) !important;
+      color: #fca5a5 !important;
+      border-color: rgba(244, 63, 94, 0.4) !important;
+    }
+    html.dark .file-list-divider {
+      border-color: #1e293b !important;
+    }
+    html.dark .btn-delete-type {
+      border-color: rgba(244, 63, 94, 0.3) !important;
+      color: #fb7185 !important;
+      background-color: rgba(136, 19, 55, 0.3) !important;
+    }
+    html.dark .btn-delete-type:hover {
+      background-color: rgba(136, 19, 55, 0.5) !important;
+    }
+
+    /* Filas generadas dinámicamente en JavaScript */
+    html.dark .project-tab-inactive {
+      background-color: rgba(30, 41, 59, 0.8) !important;
+      border-color: rgba(51, 65, 85, 0.6) !important;
+      color: #cbd5e1 !important;
+    }
+    html.dark .project-tab-inactive:hover {
+      background-color: #334155 !important;
+    }
+    html.dark .file-item-row {
+      border-color: rgba(30, 41, 59, 0.8) !important;
+      background-color: rgba(15, 23, 42, 0.6) !important;
+    }
+    html.dark .file-item-row:hover {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    html.dark .file-item-name {
+      color: #e2e8f0 !important;
+    }
+    html.dark .file-item-edit-btn {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    html.dark .file-item-edit-btn:hover {
+      background-color: #334155 !important;
+    }
+    html.dark .file-item-preview-btn {
+      background-color: rgba(6, 78, 59, 0.4) !important;
+      border-color: rgba(16, 185, 129, 0.3) !important;
+      color: #34d399 !important;
+    }
+    html.dark .file-item-preview-btn:hover {
+      background-color: rgba(6, 78, 59, 0.6) !important;
+    }
+    html.dark .empty-files-box {
+      border-color: #1e293b !important;
+      background-color: rgba(15, 23, 42, 0.4) !important;
+    }
+    html.dark .empty-files-title {
+      color: #cbd5e1 !important;
+    }
+
+    /* Modales de Diálogo en Modo Oscuro */
+    html.dark .modal-panel {
+      background-color: #0f172a !important;
+      border-color: #1e293b !important;
+      color: #e2e8f0 !important;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8) !important;
+    }
+    html.dark .modal-panel h3,
+    html.dark .modal-panel h4 {
+      color: #f8fafc !important;
+    }
+    html.dark .modal-panel p {
+      color: #94a3b8 !important;
+    }
+    html.dark .modal-panel label {
+      color: #cbd5e1 !important;
+    }
+    html.dark .modal-input {
+      background-color: #020617 !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+    html.dark .modal-input:focus {
+      border-color: #3b82f6 !important;
+    }
+    html.dark .btn-modal-close {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #94a3b8 !important;
+    }
+    html.dark .btn-modal-close:hover {
+      background-color: #334155 !important;
+      color: #ffffff !important;
+    }
+    html.dark .btn-modal-cancel {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #cbd5e1 !important;
+    }
+    html.dark .btn-modal-cancel:hover {
+      background-color: #334155 !important;
+      color: #ffffff !important;
+    }
+    html.dark .modal-choice-card {
+      background-color: rgba(15, 23, 42, 0.8) !important;
+      border-color: #1e293b !important;
+    }
+    html.dark .modal-choice-card:hover {
+      background-color: rgba(30, 41, 59, 0.6) !important;
+    }
+    html.dark .modal-choice-card h4 {
+      color: #f8fafc !important;
+    }
+    html.dark .modal-icon-badge {
+      background-color: rgba(30, 58, 138, 0.4) !important;
+      border-color: rgba(59, 130, 246, 0.3) !important;
+      color: #60a5fa !important;
+    }
+
+    /* Editor de Código en Modo Oscuro */
+    html.dark .editor-modal-container {
+      background-color: #0d131f !important;
+      border-color: #1e293b !important;
+    }
+    html.dark .editor-header {
+      background-color: #06090f !important;
+      border-color: #1e293b !important;
+    }
+    html.dark .editor-filename-input {
+      background-color: #0f172a !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    html.dark .editor-close-btn {
+      color: #94a3b8 !important;
+    }
+    html.dark .editor-close-btn:hover {
+      background-color: #1e293b !important;
+      color: #ffffff !important;
+    }
+    html.dark .editor-body-wrapper {
+      background-color: #0d1117 !important;
+    }
+    html.dark .editor-line-numbers {
+      color: #475569 !important;
+      border-color: #1e293b !important;
+    }
+    html.dark .editor-code-area {
+      color: #34d399 !important;
+      caret-color: #38bdf8 !important;
+    }
+    html.dark .editor-footer {
+      background-color: #06090f !important;
+      border-color: #1e293b !important;
+      color: #94a3b8 !important;
+    }
+
+    /* Barra de Selección Múltiple (Flotante) */
+    #bulkActionBar {
+      background-color: #1e293b !important;
+      color: #ffffff !important;
+    }
+    #bulkActionBar * {
+      color: #ffffff !important;
+    }
+
+    /* Terminal htop */
+    #modalHtopMonitor .bg-slate-900,
+    #modalHtopMonitor .bg-slate-950 {
+      background-color: #0f172a !important;
+    }
+    #modalHtopMonitor .text-slate-200,
+    #modalHtopMonitor .text-white {
+      color: #e2e8f0 !important;
+    }
+    #modalHtopMonitor .border-slate-700 {
+      border-color: #1e293b !important;
+    }
+  
+    /* =========================================================
+       OPTIMIZACIONES MÓVILES (SMARTPHONES Y TABLETS)
+       ========================================================= */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 8px 6px 24px 6px !important;
+      }
+      .saas-container {
+        border-radius: 20px !important;
+        padding: 12px 10px !important;
+      }
+      .card-soft {
+        border-radius: 16px !important;
+        padding: 14px 12px !important;
+      }
+      .modal-panel {
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+        padding: 18px 14px !important;
+        border-radius: 20px !important;
+        width: 95% !important;
+      }
+      .editor-modal-container {
+        max-height: 95vh !important;
+        border-radius: 18px !important;
+        height: 95vh !important;
+      }
+      .editor-header {
+        padding: 10px 12px !important;
+        gap: 8px !important;
+      }
+      .editor-footer {
+        padding: 6px 10px !important;
+        font-size: 10px !important;
+      }
+      .editor-code-area {
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+      }
+      #bulkActionBar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+      }
+      #bulkActionBar > div {
+        display: flex !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+      }
+      .filter-bar-wrap,
+      #projectTabsContainer {
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+
+/* Twemoji */
+img.emoji {
+      height: 1.22em;
+      width: 1.22em;
+      margin: 0 0.12em 0 0.12em;
+      vertical-align: -0.2em;
+      display: inline-block;
+      object-fit: contain;
+      image-rendering: -webkit-optimize-contrast;
+      pointer-events: none;
+      user-select: none;
+    }
