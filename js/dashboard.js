@@ -1,9 +1,18 @@
 /**
  * UTP Cloud — Lógica Multi-Proyecto del Dashboard
  */
+const sessionCfgEl = document.getElementById('utpSessionConfig');
+let sessionCfg = {};
+if (sessionCfgEl) {
+  try {
+    sessionCfg = JSON.parse(sessionCfgEl.textContent || '{}');
+  } catch (e) {}
+}
+const serverActiveUser = typeof window.serverActiveUser !== 'undefined' ? window.serverActiveUser : (sessionCfg.activeUser || '');
+const serverCsrfToken  = typeof window.serverCsrfToken !== 'undefined' ? window.serverCsrfToken : (sessionCfg.csrfToken || '');
 window.serverActiveUser = serverActiveUser;
-    window.serverCsrfToken = serverCsrfToken;
-    sessionStorage.setItem('utp_2fa_verified_user', serverActiveUser);
+window.serverCsrfToken  = serverCsrfToken;
+sessionStorage.setItem('utp_2fa_verified_user', serverActiveUser);
     sessionStorage.setItem('utp_2fa_token', 'session_active');
     sessionStorage.setItem('utp_2fa_time', Date.now().toString());
 
@@ -744,11 +753,11 @@ echo "<p>Hora del servidor: " . $fecha_actual . "</p>";
         const isActive = p.id === u.activeProjectId;
         const isSubproject = (p.id !== 'p1');
         const btn = document.createElement('div');
-        btn.onclick = () => switchProject(p.id);
+        btn.addEventListener('click', (e) => { if (e.target.closest('[data-action="delete-project"]')) return; switchProject(p.id); });
 
         const safeProjName = escapeHtml(p.name);
         const delBtnHtml = isSubproject ? `
-          <button type="button" title="Eliminar espacio" onclick="event.stopPropagation(); promptDeleteProject('${p.id}', '${safeProjName}')" class="ml-1 -mr-1 p-0.5 rounded-full ${isActive ? 'hover:bg-blue-700/60 text-blue-200 hover:text-white' : 'hover:bg-rose-500/20 text-slate-400 hover:text-rose-600'} font-bold transition text-[11px] leading-none">✕</button>
+          <button type="button" title="Eliminar espacio" data-action="delete-project" data-project-id="${escapeHtml(p.id)}" data-project-name="${safeProjName}" class="ml-1 -mr-1 p-0.5 rounded-full ${isActive ? 'hover:bg-blue-700/60 text-blue-200 hover:text-white' : 'hover:bg-rose-500/20 text-slate-400 hover:text-rose-600'} font-bold transition text-[11px] leading-none">✕</button>
         ` : '';
 
         if (isActive) {
@@ -825,17 +834,17 @@ echo "<p>Hora del servidor: " . $fecha_actual . "</p>";
           container.innerHTML += `
             <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-3.5 rounded-2xl border transition gap-2.5 sm:gap-3 ${rowCls}">
               <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-                <input type="checkbox" onchange="toggleSelectFile(${f.id})" ${isSelected ? 'checked' : ''} class="${chkCls} shrink-0">
+                <input type="checkbox" data-change-action="toggle-select-file" data-file-id="${f.id}" ${isSelected ? 'checked' : ''} class="${chkCls} shrink-0">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${badgeCls} text-xs flex items-center justify-center shrink-0">${f.type}</div>
                 <div class="min-w-0 flex-1">
                   <span class="text-xs font-bold ${isLight ? 'text-slate-800' : 'text-slate-100'} line-through font-mono font-semibold block truncate">${escapeHtml(f.name)}</span>
                 </div>
               </div>
               <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                <button onclick="restoreFromTrash(${f.id})" class="${restoreCls}">
+                <button data-action="restore-from-trash" data-file-id="${f.id}" class="${restoreCls}">
                   <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a5 5 0 015 5v2M3 10l6-6m-6 6l6 6"/></svg><span>Restaurar</span>
                 </button>
-                <button onclick="deletePermanent(${f.id})" class="${delCls}" title="Eliminar definitivamente">
+                <button data-action="delete-permanent" data-file-id="${f.id}" class="${delCls}" title="Eliminar definitivamente">
                   ✕
                 </button>
               </div>
@@ -864,7 +873,7 @@ echo "<p>Hora del servidor: " . $fecha_actual . "</p>";
             </div>
             <p class="empty-files-title text-sm font-bold text-slate-700">No hay archivos en esta categoría de ${escapeHtml(proj.name)}</p>
             <p class="text-xs text-slate-400 mt-1">Crea un archivo nuevo o sube tu proyecto.</p>
-            <button onclick="promptEditorChoice('${currentFilter !== 'ALL' ? currentFilter : 'HTML'}')" class="mt-4 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold shadow-xs">
+            <button data-action="prompt-editor-choice" data-lang="${currentFilter !== 'ALL' ? currentFilter : 'HTML'}" class="mt-4 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold shadow-xs">
               + Crear archivo ${currentFilter !== 'ALL' ? currentFilter : ''}
             </button>
           </div>
@@ -919,7 +928,7 @@ echo "<p>Hora del servidor: " . $fecha_actual . "</p>";
         container.innerHTML += `
           <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-3.5 rounded-2xl border transition gap-2.5 sm:gap-3 ${rowCls}">
             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-              <input type="checkbox" onchange="toggleSelectFile(${f.id})" ${isSelected ? 'checked' : ''} class="${chkCls} shrink-0">
+              <input type="checkbox" data-change-action="toggle-select-file" data-file-id="${f.id}" ${isSelected ? 'checked' : ''} class="${chkCls} shrink-0">
               <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${color} font-bold text-xs flex items-center justify-center shrink-0">${f.type}</div>
               <div class="min-w-0 flex-1">
                 <span class="${fileNameCls} block truncate">${escapeHtml(f.name)}</span>
@@ -927,18 +936,18 @@ echo "<p>Hora del servidor: " . $fecha_actual . "</p>";
             </div>
             <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
               ${['IMG', 'VIDEO', 'AUDIO', 'DOC'].includes(f.type) ? `
-                <button onclick="previewMediaFile(${f.id})" class="${viewMediaBtnCls}">
+                <button data-action="preview-media" data-file-id="${f.id}" class="${viewMediaBtnCls}">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                   <span>Ver</span>
                 </button>
               ` : `
-                <button onclick="openEditorWithFile(${f.id})" class="${editBtnCls}">
+                <button data-action="open-editor-file" data-file-id="${f.id}" class="${editBtnCls}">
                   <svg class="w-3.5 h-3.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                   <span>Editar</span>
                 </button>
               `}
               <!-- BOTÓN DE ELIMINAR CON CONFIRMACIÓN -->
-              <button onclick="confirmDeleteFile(${f.id})" class="${delBtnCls}" title="Mover a papelera">
+              <button data-action="confirm-delete-file" data-file-id="${f.id}" class="${delBtnCls}" title="Mover a papelera">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
               </button>
             </div>
@@ -1702,7 +1711,7 @@ echo "<p>Hora del servidor: " . $fecha_actual . "</p>";
       if (listContainer) {
         const isLight = !document.documentElement.classList.contains('dark') || document.documentElement.classList.contains('theme-light');
         listContainer.innerHTML = files.map(f => `
-          <div onclick="closeModal('modalEditorActionPrompt'); openEditorWithFile(${f.id});" class="p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between group shadow-xs ${
+          <div data-action="prompt-open-file" data-file-id="${f.id}" class="p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between group shadow-xs ${
             isLight
               ? 'border-slate-200 hover:border-blue-500 hover:bg-blue-50/40 bg-white'
               : 'border-slate-800 hover:border-blue-500/60 hover:bg-slate-850 bg-slate-900/80'
@@ -2212,4 +2221,154 @@ echo "<p>Hora del servidor: " . $fecha_actual . "</p>";
         savedTheme = localStorage.getItem('panel_theme') || 'light';
       } catch(e) {}
       applyTheme(savedTheme);
+    });
+
+
+    // ==========================================
+    // DELEGACIÓN DE EVENTOS (SIN HANDLERS INLINE / CSP ESTRICTO)
+    // ==========================================
+    document.querySelectorAll('[data-stop-propagation="1"]').forEach((el) => {
+      el.addEventListener('click', (e) => e.stopPropagation());
+    });
+
+    document.addEventListener('click', (e) => {
+      const backdrop = e.target.closest('[data-backdrop-action="cancel-upload-conflict"]');
+      if (backdrop && e.target === backdrop) {
+        cancelUploadConflictModal();
+        return;
+      }
+
+      const el = e.target.closest('[data-action]');
+      if (!el) return;
+
+      const action = el.dataset.action;
+      switch (action) {
+        case 'prompt-editor-choice':
+          promptEditorChoice(el.dataset.lang || undefined);
+          break;
+        case 'deploy-live':
+          deployCurrentProjectToLive();
+          break;
+        case 'toggle-theme':
+          toggleTheme();
+          break;
+        case 'open-2fa-modal':
+          open2FAModal();
+          break;
+        case 'trigger-upload-modal':
+          triggerUploadModal();
+          break;
+        case 'prompt-new-project':
+          promptNewProjectModal();
+          break;
+        case 'copy-deployed-url':
+          copyDeployedUrl();
+          break;
+        case 'click-target': {
+          const tgt = document.getElementById(el.dataset.target);
+          if (tgt) tgt.click();
+          break;
+        }
+        case 'set-filter':
+          setFilter(el.dataset.filter);
+          break;
+        case 'empty-trash-confirm':
+          emptyTrashConfirm();
+          break;
+        case 'confirm-bulk-delete':
+          confirmBulkDelete();
+          break;
+        case 'clear-selection':
+          clearSelection();
+          break;
+        case 'execute-bulk-restore':
+          executeBulkRestore();
+          break;
+        case 'confirm-bulk-permanent-delete':
+          confirmBulkPermanentDelete();
+          break;
+        case 'close-htop-modal':
+          closeHtopModal();
+          break;
+        case 'cancel-upload-conflict':
+          cancelUploadConflictModal();
+          break;
+        case 'choose-upload-action':
+          chooseUploadAction(el.dataset.choice);
+          break;
+        case 'confirm-create-manual-project':
+          confirmCreateManualProject();
+          break;
+        case 'execute-create-new-from-prompt':
+          executeCreateNewFromPrompt();
+          break;
+        case 'back-to-type-choice':
+          closeModal('modalEditorActionPrompt');
+          openModal('modalTypeChoice');
+          break;
+        case 'editor-lang':
+          handleEditorLanguageSelected(el.dataset.lang);
+          break;
+        case 'save-editor-code':
+          saveEditorCode();
+          break;
+        case 'execute-move-to-trash':
+          executeMoveToTrash();
+          break;
+        case 'execute-delete-project':
+          executeDeleteProject();
+          break;
+        case 'execute-empty-trash':
+          executeEmptyTrash();
+          break;
+        case 'execute-delete-by-type':
+          executeDeleteByType();
+          break;
+        case 'execute-delete-permanent':
+          executeDeletePermanent();
+          break;
+        case 'execute-bulk-delete':
+          executeBulkDelete();
+          break;
+        case 'execute-bulk-permanent-delete':
+          executeBulkPermanentDelete();
+          break;
+        case 'close-modal':
+          closeModal(el.dataset.modal);
+          break;
+        case 'delete-project':
+          e.stopPropagation();
+          promptDeleteProject(el.dataset.projectId, el.dataset.projectName);
+          break;
+        case 'restore-from-trash':
+          restoreFromTrash(Number(el.dataset.fileId));
+          break;
+        case 'delete-permanent':
+          deletePermanent(Number(el.dataset.fileId));
+          break;
+        case 'preview-media':
+          previewMediaFile(Number(el.dataset.fileId));
+          break;
+        case 'open-editor-file':
+          openEditorWithFile(Number(el.dataset.fileId));
+          break;
+        case 'confirm-delete-file':
+          confirmDeleteFile(Number(el.dataset.fileId));
+          break;
+        case 'prompt-open-file':
+          closeModal('modalEditorActionPrompt');
+          openEditorWithFile(Number(el.dataset.fileId));
+          break;
+      }
+    });
+
+    document.addEventListener('change', (e) => {
+      const el = e.target.closest('[data-change-action]');
+      if (!el) return;
+      const action = el.dataset.changeAction;
+      if (action === 'toggle-select-all') {
+        toggleSelectAll(el.checked);
+      } else if (action === 'toggle-select-file') {
+        toggleSelectFile(Number(el.dataset.fileId));
+      }
     });

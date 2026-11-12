@@ -58,20 +58,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <script>
-    (function() {
-      try {
-        const t = localStorage.getItem('panel_theme') || 'light';
-        if (t === 'dark') {
-          document.documentElement.classList.add('dark');
-          document.documentElement.classList.remove('theme-light');
-        } else {
-          document.documentElement.classList.remove('dark');
-          document.documentElement.classList.add('theme-light');
-        }
-      } catch(e) {}
-    })();
-  </script>
+  <script src="js/theme-init.js"></script>
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -80,27 +67,13 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
   <title>Dashboard - Espacio de Trabajo Personal</title>
   <link rel="icon" type="image/png" href="assets/logo.png">
   
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            display: ['Cabinet Grotesk', 'Syne', 'sans-serif'],
-            sans: ['Sora', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-            mono: ['Martian Mono', 'monospace']
-          }
-        }
-      }
-    };
-  </script>
+  <script src="js/tailwindcss.min.js"></script>
+  <script src="js/tailwind-config.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800,900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-  <!-- Apple Color Emoji Renderer (High-Resolution Apple Emojis) -->
-  <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+  <script src="js/twemoji.min.js"></script>
   <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body class="bg-[#eef4fe] text-slate-800 p-2 sm:p-6 min-h-screen antialiased flex flex-col justify-between overflow-x-hidden">
@@ -124,13 +97,13 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
           </button>
 
           <!-- BOTÓN EDITOR DE CÓDIGO -->
-          <button onclick="promptEditorChoice()" class="pill-btn flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-semibold text-xs transition shadow-sm">
+          <button data-action="prompt-editor-choice" class="pill-btn flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-semibold text-xs transition shadow-sm">
             <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
             Editor de Código
           </button>
 
           <!-- BOTÓN DESTACADO: DESPLEGAR PÁGINA EN VIVO -->
-          <button id="btnDeployLive" onclick="deployCurrentProjectToLive()" class="pill-btn flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-semibold text-xs shadow-md shadow-blue-500/25 transition">
+          <button id="btnDeployLive" data-action="deploy-live" class="pill-btn flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-semibold text-xs shadow-md shadow-blue-500/25 transition">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span>🚀 Desplegar Página</span>
           </button>
@@ -140,13 +113,13 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <!-- Usuario y Logout a la Derecha -->
       <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2 sm:gap-3 w-full lg:w-auto">
                 <!-- SELECTOR DE TEMA CLARO / OSCURO -->
-        <button id="themeToggleBtn" onclick="toggleTheme()" class="pill-toggle pill-btn flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition shadow-xs cursor-pointer select-none" title="Cambiar tema claro/oscuro">
+        <button id="themeToggleBtn" data-action="toggle-theme" class="pill-toggle pill-btn flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition shadow-xs cursor-pointer select-none" title="Cambiar tema claro/oscuro">
           <span id="themeToggleIcon" class="flex items-center justify-center">☀️</span>
           <span id="themeToggleText">Claro</span>
         </button>
 
         <!-- Tarjeta de Usuario Activo con acceso a Seguridad 2FA -->
-        <div onclick="open2FAModal()" class="user-pill flex items-center gap-2.5 bg-white border border-slate-200 pl-2 pr-3.5 py-1.5 rounded-full shadow-sm cursor-pointer hover:border-blue-300 transition" title="Configuración y Clave de Seguridad 2FA">
+        <div data-action="open-2fa-modal" class="user-pill flex items-center gap-2.5 bg-white border border-slate-200 pl-2 pr-3.5 py-1.5 rounded-full shadow-sm cursor-pointer hover:border-blue-300 transition" title="Configuración y Clave de Seguridad 2FA">
           <div id="userAvatar" class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center">
             JS
           </div>
@@ -182,7 +155,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
         </div>
 
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
-          <button onclick="triggerUploadModal()" class="w-full sm:w-auto justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2">
+          <button data-action="trigger-upload-modal" class="w-full sm:w-auto justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-2xl text-xs font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
             <span>Subir Archivos / Carpeta</span>
           </button>
@@ -204,7 +177,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
           <div id="projectTabsContainer" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 flex-1"></div>
         </div>
 
-        <button onclick="promptNewProjectModal()" class="btn-new-project text-xs font-semibold px-3.5 py-1.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-2xs shrink-0 cursor-pointer">
+        <button data-action="prompt-new-project" class="btn-new-project text-xs font-semibold px-3.5 py-1.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-2xs shrink-0 cursor-pointer">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
           <span>+ Agregar Espacio Nuevo</span>
         </button>
@@ -308,7 +281,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
 
             <!-- Botones de Acción: Copiar URL & Abrir Web -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <button onclick="copyDeployedUrl()" id="btnCopyDeployedUrl" class="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-sm">
+              <button data-action="copy-deployed-url" id="btnCopyDeployedUrl" class="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 <span id="btnCopyDeployedUrlText">Copiar URL</span>
               </button>
@@ -337,11 +310,11 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
               <p class="text-[11px] text-slate-500 mt-0.5 font-medium">Soporta carpetas completas y archivos individuales</p>
               
               <!-- Botones de selección -->
-              <div class="flex items-center gap-2 mt-3" onclick="event.stopPropagation()">
-                <button onclick="document.getElementById('fileInputDirect').click()" class="dropzone-btn text-[11px] font-semibold text-blue-600 bg-white border border-slate-200 hover:bg-slate-50 px-2.5 py-1 rounded-lg transition shadow-2xs">
+              <div class="flex items-center gap-2 mt-3" data-stop-propagation="1">
+                <button data-action="click-target" data-target="fileInputDirect" class="dropzone-btn text-[11px] font-semibold text-blue-600 bg-white border border-slate-200 hover:bg-slate-50 px-2.5 py-1 rounded-lg transition shadow-2xs">
                   Subir Archivos
                 </button>
-                <button onclick="document.getElementById('folderInputDirect').click()" class="dropzone-btn text-[11px] font-semibold text-purple-600 bg-white border border-slate-200 hover:bg-slate-50 px-2.5 py-1 rounded-lg transition shadow-2xs">
+                <button data-action="click-target" data-target="folderInputDirect" class="dropzone-btn text-[11px] font-semibold text-purple-600 bg-white border border-slate-200 hover:bg-slate-50 px-2.5 py-1 rounded-lg transition shadow-2xs">
                   Subir Carpeta
                 </button>
               </div>
@@ -375,7 +348,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
             <div class="card-soft p-5 flex flex-col justify-between">
               <div class="flex justify-between items-start">
                 <div class="metric-icon-html w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">HTML</div>
-                <button onclick="promptEditorChoice('HTML')" class="metric-btn-html text-xs font-semibold text-amber-600 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-full transition">Editar / Crear +</button>
+                <button data-action="prompt-editor-choice" data-lang="HTML" class="metric-btn-html text-xs font-semibold text-amber-600 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-full transition">Editar / Crear +</button>
               </div>
               <div class="mt-4">
                 <span id="statHTML" class="text-2xl font-medium text-slate-900 block">0 Archivos</span>
@@ -386,7 +359,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
             <div class="card-soft p-5 flex flex-col justify-between">
               <div class="flex justify-between items-start">
                 <div class="metric-icon-css w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">CSS</div>
-                <button onclick="promptEditorChoice('CSS')" class="metric-btn-css text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-full transition">Editar / Crear +</button>
+                <button data-action="prompt-editor-choice" data-lang="CSS" class="metric-btn-css text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-full transition">Editar / Crear +</button>
               </div>
               <div class="mt-4">
                 <span id="statCSS" class="text-2xl font-medium text-slate-900 block">0 Archivos</span>
@@ -397,7 +370,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
             <div class="card-soft p-5 flex flex-col justify-between">
               <div class="flex justify-between items-start">
                 <div class="metric-icon-php w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs">PHP</div>
-                <button onclick="promptEditorChoice('PHP')" class="metric-btn-php text-xs font-semibold text-purple-600 bg-purple-50 hover:bg-purple-100 px-2.5 py-1 rounded-full transition">Editar / Crear +</button>
+                <button data-action="prompt-editor-choice" data-lang="PHP" class="metric-btn-php text-xs font-semibold text-purple-600 bg-purple-50 hover:bg-purple-100 px-2.5 py-1 rounded-full transition">Editar / Crear +</button>
               </div>
               <div class="mt-4">
                 <span id="statPHP" class="text-2xl font-medium text-slate-900 block">0 Archivos</span>
@@ -421,7 +394,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
 
               <!-- Botones de Acción Rápida -->
               <div class="flex flex-wrap items-center gap-2">
-                <button onclick="promptEditorChoice()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition">
+                <button data-action="prompt-editor-choice" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                   <span>Editor de Código</span>
                 </button>
@@ -433,15 +406,15 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
               
               <!-- Filtro de Categoría -->
               <div class="filter-bar-wrap flex items-center gap-1.5 bg-slate-100/80 p-1 rounded-xl text-xs overflow-x-auto no-scrollbar max-w-full">
-                <button onclick="setFilter('ALL')" id="filter-ALL" class="px-3 py-1.5 rounded-lg font-bold bg-white text-slate-800 shadow-xs transition shrink-0">Todos</button>
-                <button onclick="setFilter('HTML')" id="filter-HTML" class="filter-btn px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-950 transition shrink-0">HTML</button>
-                <button onclick="setFilter('CSS')" id="filter-CSS" class="filter-btn px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-950 transition shrink-0">CSS</button>
-                <button onclick="setFilter('PHP')" id="filter-PHP" class="filter-btn px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-950 transition shrink-0">PHP</button>
-                <button onclick="setFilter('MEDIA')" id="filter-MEDIA" class="filter-btn px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-950 transition flex items-center gap-1.5 shrink-0">
+                <button data-action="set-filter" data-filter="ALL" id="filter-ALL" class="px-3 py-1.5 rounded-lg font-bold bg-white text-slate-800 shadow-xs transition shrink-0">Todos</button>
+                <button data-action="set-filter" data-filter="HTML" id="filter-HTML" class="filter-btn px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-950 transition shrink-0">HTML</button>
+                <button data-action="set-filter" data-filter="CSS" id="filter-CSS" class="filter-btn px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-950 transition shrink-0">CSS</button>
+                <button data-action="set-filter" data-filter="PHP" id="filter-PHP" class="filter-btn px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-950 transition shrink-0">PHP</button>
+                <button data-action="set-filter" data-filter="MEDIA" id="filter-MEDIA" class="filter-btn px-3 py-1.5 rounded-lg font-semibold text-slate-600 hover:text-slate-950 transition flex items-center gap-1.5 shrink-0">
                   <svg class="w-3.5 h-3.5 text-purple-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                   <span>Media</span>
                 </button>
-                <button onclick="setFilter('TRASH')" id="filter-TRASH" class="filter-trash-btn px-3 py-1.5 rounded-lg font-semibold text-rose-600 hover:bg-rose-100/70 transition flex items-center gap-1.5 shrink-0">
+                <button data-action="set-filter" data-filter="TRASH" id="filter-TRASH" class="filter-trash-btn px-3 py-1.5 rounded-lg font-semibold text-rose-600 hover:bg-rose-100/70 transition flex items-center gap-1.5 shrink-0">
                   <svg class="w-3.5 h-3.5 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                   <span>Papelera</span>
                   <span id="trashCountBadge" class="trash-badge bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
@@ -461,7 +434,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
                   <p class="text-[11px] text-rose-800 dark:text-rose-300/90 mt-0.5">Los archivos aquí pueden ser restaurados o eliminados permanentemente.</p>
                 </div>
               </div>
-              <button onclick="emptyTrashConfirm()" class="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition shrink-0">
+              <button data-action="empty-trash-confirm" class="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition shrink-0">
                 Vaciar Papelera
               </button>
             </div>
@@ -469,7 +442,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
             <!-- BARRA DE ACCIONES POR LOTE (SELECCIÓN MÚLTIPLE) -->
             <div id="bulkActionBar" class="hidden mb-3 p-3 rounded-2xl bg-slate-900 text-white shadow-xl items-center justify-between gap-3 transition">
               <div class="flex items-center gap-2.5">
-                <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" class="w-4 h-4 rounded text-blue-600 bg-slate-800 border-slate-700 cursor-pointer focus:ring-0">
+                <input type="checkbox" id="selectAllCheckbox" data-change-action="toggle-select-all" class="w-4 h-4 rounded text-blue-600 bg-slate-800 border-slate-700 cursor-pointer focus:ring-0">
                 <label for="selectAllCheckbox" class="text-xs font-bold text-slate-200 cursor-pointer select-none">
                   <span id="bulkSelectedCount">0 seleccionados</span>
                 </label>
@@ -477,24 +450,24 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
 
               <!-- Acciones cuando estamos en archivos activos -->
               <div id="bulkActiveActions" class="flex items-center gap-2">
-                <button onclick="confirmBulkDelete()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+                <button data-action="confirm-bulk-delete" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                   <span id="btnBulkDeleteText">Mover a papelera</span>
                 </button>
-                <button onclick="clearSelection()" class="text-slate-400 hover:text-white px-2.5 py-1.5 text-xs font-semibold transition">
+                <button data-action="clear-selection" class="text-slate-400 hover:text-white px-2.5 py-1.5 text-xs font-semibold transition">
                   Cancelar
                 </button>
               </div>
 
               <!-- Acciones cuando estamos en la papelera -->
               <div id="bulkTrashActions" class="hidden flex items-center gap-2">
-                <button onclick="executeBulkRestore()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+                <button data-action="execute-bulk-restore" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
                   <span>↩ Restaurar seleccionados</span>
                 </button>
-                <button onclick="confirmBulkPermanentDelete()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+                <button data-action="confirm-bulk-permanent-delete" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
                   <span>✕ Eliminar permanentemente</span>
                 </button>
-                <button onclick="clearSelection()" class="text-slate-400 hover:text-white px-2.5 py-1.5 text-xs font-semibold transition">
+                <button data-action="clear-selection" class="text-slate-400 hover:text-white px-2.5 py-1.5 text-xs font-semibold transition">
                   Cancelar
                 </button>
               </div>
@@ -535,7 +508,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2.5">
           <div class="flex items-center gap-1.5">
-            <span class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer hover:opacity-80" onclick="closeHtopModal()"></span>
+            <span class="w-3 h-3 rounded-full bg-rose-500 cursor-pointer hover:opacity-80" data-action="close-htop-modal"></span>
             <span class="w-3 h-3 rounded-full bg-amber-500"></span>
             <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
           </div>
@@ -546,7 +519,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
             <span>24/7 LIVE STREAM</span>
           </div>
-          <button onclick="closeHtopModal()" class="text-slate-400 hover:text-white px-2 py-0.5 rounded text-base leading-none">&times;</button>
+          <button data-action="close-htop-modal" class="text-slate-400 hover:text-white px-2 py-0.5 rounded text-base leading-none">&times;</button>
         </div>
       </div>
 
@@ -653,7 +626,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
           <span class="bg-slate-800/80 px-2 py-0.5 rounded text-slate-300"><strong class="text-cyan-400">F5</strong> Tree</span>
           <span class="bg-slate-800/80 px-2 py-0.5 rounded text-slate-300"><strong class="text-cyan-400">F10</strong> Quit</span>
         </div>
-        <button onclick="closeHtopModal()" class="px-4 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition shadow-sm">
+        <button data-action="close-htop-modal" class="px-4 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition shadow-sm">
           Cerrar Monitor
         </button>
       </div>
@@ -661,9 +634,9 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
     </div>
   </div>
 
-    <div id="modalUploadConflict" onclick="if (event.target === this) cancelUploadConflictModal();" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div id="modalUploadConflict" data-backdrop-action="cancel-upload-conflict" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="modal-panel bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl relative text-slate-800">
-      <button type="button" onclick="cancelUploadConflictModal()" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition cursor-pointer" title="Cerrar">✕</button>
+      <button type="button" data-action="cancel-upload-conflict" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition cursor-pointer" title="Cerrar">✕</button>
       
       <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 flex items-center justify-center font-bold text-lg mb-4 shadow-sm">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
@@ -677,7 +650,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <div class="space-y-3.5">
         
         <!-- Opción 1: Reemplazar Proyecto Actual (Adaptado al Tema Blanco y Oscuro) -->
-        <div onclick="chooseUploadAction('replace')" class="p-4 rounded-2xl border border-rose-200 hover:border-rose-400 bg-rose-50/80 hover:bg-rose-100/90 dark:border-rose-900/50 dark:bg-rose-950/30 dark:hover:bg-rose-950/50 cursor-pointer transition flex items-start gap-3.5 group shadow-xs">
+        <div data-action="choose-upload-action" data-choice="replace" class="p-4 rounded-2xl border border-rose-200 hover:border-rose-400 bg-rose-50/80 hover:bg-rose-100/90 dark:border-rose-900/50 dark:bg-rose-950/30 dark:hover:bg-rose-950/50 cursor-pointer transition flex items-start gap-3.5 group shadow-xs">
           <div class="w-10 h-10 rounded-xl bg-white border border-rose-200 text-rose-600 dark:bg-rose-900/50 dark:border-rose-800/60 dark:text-rose-300 flex items-center justify-center font-bold text-base shadow-xs group-hover:scale-105 transition shrink-0">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
           </div>
@@ -703,7 +676,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
             <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300">Nombre del nuevo espacio:</label>
             <div class="flex items-center gap-2">
               <input id="newProjectNameInput" type="text" value="Proyecto 2" class="modal-input w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 font-sans shadow-xs">
-              <button onclick="chooseUploadAction('new_space')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm shrink-0">
+              <button data-action="choose-upload-action" data-choice="new_space" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm shrink-0">
                 Crear y Subir
               </button>
             </div>
@@ -721,7 +694,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
   <!-- ============================================================= -->
   <div id="modalNewProjectManual" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="modal-panel bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl relative text-slate-800">
-      <button onclick="closeModal('modalNewProjectManual')" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition">✕</button>
+      <button data-action="close-modal" data-modal="modalNewProjectManual" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition">✕</button>
       
       <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50 flex items-center justify-center font-bold text-lg mb-3 shadow-2xs">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.58-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
@@ -737,10 +710,10 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
         </div>
 
         <div class="flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2 pt-2">
-          <button onclick="closeModal('modalNewProjectManual')" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
+          <button data-action="close-modal" data-modal="modalNewProjectManual" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
             Cancelar
           </button>
-          <button onclick="confirmCreateManualProject()" class="py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition">
+          <button data-action="confirm-create-manual-project" class="py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition">
             Crear Espacio
           </button>
         </div>
@@ -755,7 +728,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
   <!-- ============================================================= -->
   <div id="modalEditorActionPrompt" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="modal-panel bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
-      <button onclick="closeModal('modalEditorActionPrompt')" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition">✕</button>
+      <button data-action="close-modal" data-modal="modalEditorActionPrompt" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition">✕</button>
       
       <div class="flex items-center gap-3 mb-2">
         <div id="actionPromptBadgeIcon" class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50 flex items-center justify-center font-extrabold text-sm">
@@ -780,13 +753,13 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <!-- Opción 2: Crear un Nuevo Archivo -->
       <div class="pt-3 border-t border-slate-800">
         <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">O crear un archivo nuevo:</span>
-        <button id="btnActionCreateNew" onclick="executeCreateNewFromPrompt()" class="w-full py-3 px-4 rounded-2xl border-2 border-dashed border-slate-750 hover:border-blue-500 hover:bg-slate-850/60 transition flex items-center justify-center gap-2 text-xs font-bold text-slate-300 hover:text-blue-400 group">
+        <button id="btnActionCreateNew" data-action="execute-create-new-from-prompt" class="w-full py-3 px-4 rounded-2xl border-2 border-dashed border-slate-750 hover:border-blue-500 hover:bg-slate-850/60 transition flex items-center justify-center gap-2 text-xs font-bold text-slate-300 hover:text-blue-400 group">
           <span class="w-6 h-6 rounded-lg bg-slate-800 group-hover:bg-blue-600 text-slate-300 group-hover:text-white flex items-center justify-center text-sm font-bold transition">+</span>
           <span id="btnActionCreateNewText">Crear un Nuevo Archivo</span>
         </button>
       </div>
 
-      <button onclick="closeModal('modalEditorActionPrompt'); openModal('modalTypeChoice');" class="text-xs font-semibold text-slate-400 hover:text-white text-center w-full mt-4 transition">
+      <button data-action="back-to-type-choice" class="text-xs font-semibold text-slate-400 hover:text-white text-center w-full mt-4 transition">
         &larr; Volver a elegir lenguaje
       </button>
     </div>
@@ -797,7 +770,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
   <!-- ============================================================= -->
   <div id="modalTypeChoice" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="modal-panel bg-white border border-slate-200 rounded-3xl p-6 max-w-lg w-full shadow-2xl relative">
-      <button onclick="closeModal('modalTypeChoice')" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition">✕</button>
+      <button data-action="close-modal" data-modal="modalTypeChoice" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition">✕</button>
       
       <div class="flex items-center gap-3 mb-2">
         <div class="modal-icon-badge w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-sm">
@@ -814,7 +787,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <!-- 3 Opciones Clickeables -->
       <div class="space-y-3">
         <!-- Opción HTML -->
-        <div onclick="handleEditorLanguageSelected('HTML')" class="modal-choice-card p-4 rounded-2xl cursor-pointer transition flex items-center justify-between group shadow-xs">
+        <div data-action="editor-lang" data-lang="HTML" class="modal-choice-card p-4 rounded-2xl cursor-pointer transition flex items-center justify-between group shadow-xs">
           <div class="flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-extrabold text-sm group-hover:scale-105 transition">
               HTML
@@ -834,7 +807,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
         </div>
 
         <!-- Opción CSS -->
-        <div onclick="handleEditorLanguageSelected('CSS')" class="modal-choice-card p-4 rounded-2xl cursor-pointer transition flex items-center justify-between group shadow-xs">
+        <div data-action="editor-lang" data-lang="CSS" class="modal-choice-card p-4 rounded-2xl cursor-pointer transition flex items-center justify-between group shadow-xs">
           <div class="flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-extrabold text-sm group-hover:scale-105 transition">
               CSS
@@ -854,7 +827,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
         </div>
 
         <!-- Opción PHP -->
-        <div onclick="handleEditorLanguageSelected('PHP')" class="modal-choice-card p-4 rounded-2xl cursor-pointer transition flex items-center justify-between group shadow-xs">
+        <div data-action="editor-lang" data-lang="PHP" class="modal-choice-card p-4 rounded-2xl cursor-pointer transition flex items-center justify-between group shadow-xs">
           <div class="flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center font-extrabold text-sm group-hover:scale-105 transition">
               PHP
@@ -900,11 +873,11 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
         </div>
 
         <div class="flex items-center gap-2">
-          <button onclick="saveEditorCode()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+          <button data-action="save-editor-code" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             <span>Guardar Archivo</span>
           </button>
-          <button onclick="closeModal('modalEditor')" class="editor-close-btn px-3 py-1.5 rounded-xl transition font-bold">
+          <button data-action="close-modal" data-modal="modalEditor" class="editor-close-btn px-3 py-1.5 rounded-xl transition font-bold">
             Cerrar
           </button>
         </div>
@@ -944,10 +917,10 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <p id="deleteFileNameTarget" class="text-sm font-bold text-slate-800 dark:text-slate-200 font-mono mb-5">index.html</p>
 
       <div class="flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2.5 sm:gap-3">
-        <button onclick="closeModal('modalConfirmDelete')" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
+        <button data-action="close-modal" data-modal="modalConfirmDelete" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
           Cancelar
         </button>
-        <button onclick="executeMoveToTrash()" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
+        <button data-action="execute-move-to-trash" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
           Sí, mover a papelera
         </button>
       </div>
@@ -973,10 +946,10 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
         ¿Estás seguro de que deseas eliminar permanentemente el espacio <strong id="deleteProjectTargetName" class="text-slate-800"></strong> y sus archivos en el servidor? Esta acción no se puede deshacer.
       </p>
       <div class="grid grid-cols-2 gap-2">
-        <button onclick="closeModal('modalConfirmDeleteProject')" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
+        <button data-action="close-modal" data-modal="modalConfirmDeleteProject" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
           Cancelar
         </button>
-        <button onclick="executeDeleteProject()" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm transition">
+        <button data-action="execute-delete-project" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm transition">
           Sí, Eliminar
         </button>
       </div>
@@ -994,10 +967,10 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <p class="text-sm font-bold text-slate-700 mb-5">Se eliminarán definitivamente todos los archivos de la papelera</p>
 
       <div class="flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2.5 sm:gap-3">
-        <button onclick="closeModal('modalConfirmEmptyTrash')" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
+        <button data-action="close-modal" data-modal="modalConfirmEmptyTrash" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
           Cancelar
         </button>
-        <button onclick="executeEmptyTrash()" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
+        <button data-action="execute-empty-trash" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
           Sí, vaciar definitivamente
         </button>
       </div>
@@ -1022,10 +995,10 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       </p>
 
       <div class="flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2.5 sm:gap-3">
-        <button onclick="closeModal('modalConfirmDeleteByType')" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
+        <button data-action="close-modal" data-modal="modalConfirmDeleteByType" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
           Cancelar
         </button>
-        <button onclick="executeDeleteByType()" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
+        <button data-action="execute-delete-by-type" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
           Sí, mover a papelera
         </button>
       </div>
@@ -1048,10 +1021,10 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <p id="deletePermanentFileName" class="text-sm font-bold text-slate-800 dark:text-slate-200 font-mono mb-5">index.html</p>
 
       <div class="flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2.5 sm:gap-3">
-        <button onclick="closeModal('modalConfirmDeletePermanent')" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
+        <button data-action="close-modal" data-modal="modalConfirmDeletePermanent" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
           Cancelar
         </button>
-        <button onclick="executeDeletePermanent()" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
+        <button data-action="execute-delete-permanent" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
           Sí, eliminar
         </button>
       </div>
@@ -1075,10 +1048,10 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <div id="bulkDeleteNames" class="text-xs font-bold text-slate-300 font-mono bg-slate-950 p-2.5 rounded-xl border border-slate-800 break-words mb-5 max-h-24 overflow-y-auto text-left"></div>
 
       <div class="flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2.5 sm:gap-3">
-        <button onclick="closeModal('modalConfirmBulkDelete')" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
+        <button data-action="close-modal" data-modal="modalConfirmBulkDelete" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
           Cancelar
         </button>
-        <button onclick="executeBulkDelete()" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
+        <button data-action="execute-bulk-delete" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
           Mover a papelera
         </button>
       </div>
@@ -1102,10 +1075,10 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       <div id="bulkPermanentNames" class="text-xs font-bold text-slate-300 font-mono bg-slate-950 p-2.5 rounded-xl border border-slate-800 break-words mb-5 max-h-24 overflow-y-auto text-left"></div>
 
       <div class="flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2.5 sm:gap-3">
-        <button onclick="closeModal('modalConfirmBulkPermanent')" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
+        <button data-action="close-modal" data-modal="modalConfirmBulkPermanent" class="btn-modal-cancel py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition">
           Cancelar
         </button>
-        <button onclick="executeBulkPermanentDelete()" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
+        <button data-action="execute-bulk-permanent-delete" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
           Eliminar
         </button>
       </div>
@@ -1119,7 +1092,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
   <!-- ============================================================= -->
   <div id="modalMediaPreview" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="modal-panel bg-white border border-slate-200 rounded-3xl p-6 max-w-2xl w-full shadow-2xl relative text-slate-800">
-      <button onclick="closeModal('modalMediaPreview')" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition">✕</button>
+      <button data-action="close-modal" data-modal="modalMediaPreview" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition">✕</button>
       
       <div class="flex items-center gap-3 mb-4">
         <span id="mediaPreviewTypeBadge" class="px-2.5 py-1 rounded-xl font-bold text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">IMG</span>
@@ -1136,7 +1109,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
 
 
       <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
-        <button onclick="closeModal('modalMediaPreview')" class="btn-modal-cancel py-2.5 px-5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 font-bold text-xs transition">
+        <button data-action="close-modal" data-modal="modalMediaPreview" class="btn-modal-cancel py-2.5 px-5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-300 font-bold text-xs transition">
           Cerrar
         </button>
       </div>
@@ -1149,7 +1122,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
   <!-- ============================================================= -->
   <div id="modalUser2FA" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="modal-panel bg-white border border-slate-200 rounded-3xl p-6 max-w-md w-full shadow-2xl relative text-slate-800">
-      <button onclick="closeModal('modalUser2FA')" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition cursor-pointer" title="Cerrar">✕</button>
+      <button data-action="close-modal" data-modal="modalUser2FA" class="btn-modal-close absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition cursor-pointer" title="Cerrar">✕</button>
       
       <div class="flex items-center gap-3 mb-4">
         <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-base border border-blue-200 dark:border-blue-800/60 shadow-xs shrink-0">
@@ -1184,7 +1157,7 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
       </div>
 
       <div class="mt-5 flex justify-end">
-        <button type="button" onclick="closeModal('modalUser2FA')" class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md transition cursor-pointer">
+        <button type="button" data-action="close-modal" data-modal="modalUser2FA" class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md transition cursor-pointer">
           Entendido
         </button>
       </div>
@@ -1201,13 +1174,10 @@ $active_session_user = strtolower(preg_replace('/[^a-z0-9_-]/', '', $_SESSION['u
   <!-- ============================================================= -->
   <!-- SCRIPT CON TODA LA LÓGICA MULTI-PROYECTO DEL DASHBOARD -->
   <!-- ============================================================= -->
-  <script>
-    // =========================================================================
-    // VINCULACIÓN CON LA SESIÓN AUTENTICADA Y 2FA DE PRODUCCIÓN (PHP)
-    // =========================================================================
-    const serverActiveUser = '<?php echo $active_session_user; ?>';
-    const serverCsrfToken  = '<?php echo htmlspecialchars($csrf_token, ENT_QUOTES, "UTF-8"); ?>';
-  </script>
+  <script id="utpSessionConfig" type="application/json"><?php echo json_encode([
+      'activeUser' => $active_session_user,
+      'csrfToken'  => $csrf_token,
+  ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?></script>
   <script src="js/dashboard.js"></script>
 
 </body>

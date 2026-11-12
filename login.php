@@ -81,20 +81,7 @@ $enroll_secret_formatted = (!$is_enrolled && $is_2fa_step) ? implode(' ', str_sp
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <script>
-    (function() {
-      try {
-        const t = localStorage.getItem('panel_theme') || 'light';
-        if (t === 'dark') {
-          document.documentElement.classList.add('dark');
-          document.documentElement.classList.remove('theme-light');
-        } else {
-          document.documentElement.classList.remove('dark');
-          document.documentElement.classList.add('theme-light');
-        }
-      } catch(e) {}
-    })();
-  </script>
+  <script src="js/theme-init.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -104,8 +91,8 @@ $enroll_secret_formatted = (!$is_enrolled && $is_2fa_step) ? implode(' ', str_sp
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://api.fontshare.com">
   <link rel="stylesheet" href="css/style.css">
-  <!-- Apple Color Emoji Renderer (High-Resolution Apple Emojis) -->
-  <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+  <!-- Renderizador local de emojis -->
+  <script src="js/twemoji.min.js"></script>
   <style>
     img.emoji {
       height: 1.2em;
@@ -122,7 +109,7 @@ $enroll_secret_formatted = (!$is_enrolled && $is_2fa_step) ? implode(' ', str_sp
 </head>
 <body>
   <!-- Selector de Tema en Login -->
-  <button id="themeToggleBtn" onclick="toggleThemeLogin()" style="position:fixed; top:20px; right:20px; z-index:100; border-radius:999px; padding:8px 14px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; transition:all 0.2s; border:1px solid var(--border-card); background:var(--bg-card); color:var(--text-dark); box-shadow:0 4px 14px rgba(0,0,0,0.18);" title="Cambiar tema claro/oscuro">
+  <button id="themeToggleBtn" style="position:fixed; top:20px; right:20px; z-index:100; border-radius:999px; padding:8px 14px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px; cursor:pointer; transition:all 0.2s; border:1px solid var(--border-card); background:var(--bg-card); color:var(--text-dark); box-shadow:0 4px 14px rgba(0,0,0,0.18);" title="Cambiar tema claro/oscuro">
     <span id="themeToggleIcon">🌙</span>
     <span id="themeToggleText">Oscuro</span>
   </button>
@@ -324,118 +311,6 @@ $enroll_secret_formatted = (!$is_enrolled && $is_2fa_step) ? implode(' ', str_sp
   </div>
 
   <script src="js/login.js"></script>
-  <?php if (isset($_GET['logout'])): ?>
-  <script>
-    (function() {
-      let seconds = 5;
-      const counter = document.getElementById('logoutTimerCount');
-      const bar = document.getElementById('logoutProgressBar');
-      const interval = setInterval(() => {
-        seconds--;
-        if (counter) counter.textContent = seconds;
-        if (bar) bar.style.width = (seconds * 20) + '%';
-        if (seconds <= 0) {
-          clearInterval(interval);
-          window.location.replace('login.php');
-        }
-      }, 1000);
-
-      // Si el usuario empieza a interactuar con el formulario, cancelar redirección automática
-      const cancelRedirect = () => clearInterval(interval);
-      const userInp = document.getElementById('usernameInput') || document.querySelector('input[name="usuario"]');
-      const passInp = document.getElementById('passwordInput') || document.querySelector('input[name="password"]');
-      if (userInp) {
-        userInp.addEventListener('focus', cancelRedirect);
-        userInp.addEventListener('input', cancelRedirect);
-      }
-      if (passInp) {
-        passInp.addEventListener('focus', cancelRedirect);
-        passInp.addEventListener('input', cancelRedirect);
-      }
-    })();
-  </script>
-  <?php endif; ?>
-  <script>
-    // Renderizado universal de emojis estilo Apple Retina HD (Apple Color Emoji)
-    const APPLE_FE0F_SET = new Set([
-      '26a0', '1f6e1', '2600', '1f5d1', '2699', '2709', '270f', '260e', '2702', '2615', '2764', '26a1', '267b'
-    ]);
-
-    function parseAppleEmojis(target = document.body) {
-      if (typeof twemoji !== 'undefined' && twemoji && twemoji.parse) {
-        try {
-          twemoji.parse(target, {
-            callback: function(icon, options) {
-              const finalIcon = APPLE_FE0F_SET.has(icon) ? (icon + '-fe0f') : icon;
-              return 'https://cdn.jsdelivr.net/gh/iamcal/emoji-data@master/img-apple-160/' + finalIcon + '.png';
-            },
-            onerror: function() {
-              if (this.src && !this.src.includes('-fe0f.png')) {
-                this.src = this.src.replace('.png', '-fe0f.png');
-              } else if (this.parentNode) {
-                this.parentNode.replaceChild(document.createTextNode(this.alt), this);
-              }
-            }
-          });
-        } catch (e) {}
-      }
-    }
-    window.parseAppleEmojis = parseAppleEmojis;
-    window.parseTwemojis = parseAppleEmojis;
-
-    // ==========================================
-    // SISTEMA DE CONMUTACIÓN DE TEMA EN LOGIN
-    // ==========================================
-    function updateLoginThemeUI(theme) {
-      const btn = document.getElementById('themeToggleBtn');
-      const icon = document.getElementById('themeToggleIcon');
-      const text = document.getElementById('themeToggleText');
-      if (!btn || !icon || !text) return;
-      if (theme === 'dark') {
-        icon.textContent = '🌙';
-        text.textContent = 'Oscuro';
-        btn.title = 'Cambiar a Tema Claro';
-      } else {
-        icon.textContent = '☀️';
-        text.textContent = 'Claro';
-        btn.title = 'Cambiar a Tema Oscuro';
-      }
-      parseAppleEmojis(icon);
-    }
-
-    function applyLoginTheme(theme) {
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('theme-light');
-        document.body.classList.add('dark');
-        document.body.classList.remove('theme-light');
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.documentElement.classList.add('theme-light');
-        document.body.classList.remove('dark');
-        document.body.classList.add('theme-light');
-      }
-      try {
-        localStorage.setItem('panel_theme', theme);
-      } catch(e) {}
-      updateLoginThemeUI(theme);
-    }
-
-    function toggleThemeLogin() {
-      const isLight = document.documentElement.classList.contains('theme-light');
-      const newTheme = isLight ? 'dark' : 'light';
-      applyLoginTheme(newTheme);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      let savedTheme = 'light';
-      try {
-        savedTheme = localStorage.getItem('panel_theme') || 'light';
-      } catch(e) {}
-      applyLoginTheme(savedTheme);
-      parseAppleEmojis();
-    });
-  </script>
 
   <?php if ($is_2fa_step && !$is_enrolled): ?>
   <!-- ================= MODAL VINCULACIÓN GOOGLE AUTHENTICATOR ================= -->
@@ -460,8 +335,8 @@ $enroll_secret_formatted = (!$is_enrolled && $is_2fa_step) ? implode(' ', str_sp
       <div class="qr-wrapper">
         <div id="setupQrBox" style="background:#ffffff; padding:10px; border-radius:12px; display:flex; justify-content:center; align-items:center; min-width:180px; min-height:180px; box-shadow:0 4px 12px rgba(0,0,0,0.08);"></div>
         <div class="secret-box">
-          <span id="secretDisplay" class="secret-code"><?php echo htmlspecialchars($enroll_secret_formatted, ENT_QUOTES, 'UTF-8'); ?></span>
-          <button type="button" id="copySecretBtn" onclick="copyEnrollSecret()" class="btn-copy" title="Copiar clave secreta">
+          <span id="secretDisplay" data-raw="<?php echo htmlspecialchars($enroll_secret_raw, ENT_QUOTES, 'UTF-8'); ?>" class="secret-code"><?php echo htmlspecialchars($enroll_secret_formatted, ENT_QUOTES, 'UTF-8'); ?></span>
+          <button type="button" id="copySecretBtn" class="btn-copy" title="Copiar clave secreta">
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
             </svg>
@@ -479,64 +354,13 @@ $enroll_secret_formatted = (!$is_enrolled && $is_2fa_step) ? implode(' ', str_sp
   </div>
 
   <script src="js/qrcode.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const modal = document.getElementById('modal2FASetup');
-      const openBtn = document.getElementById('openSetupModalBtn');
-      const closeBtn = document.getElementById('closeModalBtn');
-      const doneBtn = document.getElementById('doneModalBtn');
-      const qrBox = document.getElementById('setupQrBox');
-
-      let qrGenerated = false;
-
-      function openModal() {
-        if (modal) modal.classList.add('active');
-        if (!qrGenerated && qrBox && typeof QRCode !== 'undefined') {
-          qrBox.innerHTML = '';
-          new QRCode(qrBox, {
-            text: <?php echo json_encode($enroll_otp_uri); ?>,
-            width: 180,
-            height: 180,
-            colorDark: "#0f172a",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.M
-          });
-          qrGenerated = true;
-        }
-      }
-
-      function closeModal() {
-        if (modal) modal.classList.remove('active');
-      }
-
-      if (openBtn) openBtn.addEventListener('click', openModal);
-      if (closeBtn) closeBtn.addEventListener('click', closeModal);
-      if (doneBtn) doneBtn.addEventListener('click', closeModal);
-      if (modal) {
-        modal.addEventListener('click', (e) => {
-          if (e.target === modal) closeModal();
-        });
-      }
-      // Abrir modal automáticamente al ingresar si requiere vinculación inicial o tras restablecimiento
-      openModal();
-    });
-
-    function copyEnrollSecret() {
-      const raw = <?php echo json_encode($enroll_secret_raw); ?>;
-      const copyText = document.getElementById('copyText');
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(raw).then(() => {
-          if (copyText) copyText.textContent = '¡Copiado!';
-          setTimeout(() => { if (copyText) copyText.textContent = 'Copiar'; }, 2000);
-        }).catch(() => {
-          alert('Clave: ' + raw);
-        });
-      } else {
-        alert('Clave: ' + raw);
-      }
-    }
-  </script>
   <?php endif; ?>
+
+  <script id="loginPageConfig" type="application/json"><?php echo json_encode([
+      'logoutRedirect' => isset($_GET['logout']),
+      'enrollOtpUri'   => ($is_2fa_step && !$is_enrolled) ? $enroll_otp_uri : null,
+  ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?></script>
+  <script src="js/login-page.js"></script>
 
 </body>
 </html>
